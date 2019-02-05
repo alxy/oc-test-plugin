@@ -72,6 +72,12 @@ tabs:
 secondaryTabs:
 
     fields:
+    
+        color:
+            span: auto
+            label: Color
+            type: colorpicker
+            tab: File Upload
 
         photo:
             span: auto
