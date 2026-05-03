@@ -1,14 +1,15 @@
 <?php namespace October\Test\Models;
 
 use Model;
+use October\Test\Classes\StatusEnum;
 
 /**
  * Comment Model
  */
 class Comment extends Model
 {
-
     use \October\Rain\Database\Traits\Validation;
+    use \October\Rain\Database\Traits\SoftDelete;
 
     /**
      * @var string The database table used by the model.
@@ -16,49 +17,95 @@ class Comment extends Model
     public $table = 'october_test_comments';
 
     /**
-     * @var array Guarded fields
+     * @var array dates
      */
-    protected $guarded = ['*'];
+    protected $dates = ['deleted_at'];
 
     /**
-     * @var array Fillable fields
+     * @var array casts
      */
-    protected $fillable = [];
+    protected $casts = [
+        // PHP 8.1
+        // 'status' => StatusEnum::class,
+    ];
 
     /**
-     * @var array Jsonable fields
+     * @var array fillable fields
+     */
+    protected $fillable = ['name', 'content'];
+
+    /**
+     * @var array jsonable fields
      */
     protected $jsonable = ['breakdown', 'mood', 'quotes'];
 
     /**
-     * @var array Rules
+     * @var array rules
      */
     public $rules = [
         'name' => 'required',
     ];
 
     /**
-     * @var array Relations
+     * @var array belongsTo
      */
     public $belongsTo = [
-        'user' => ['October\Test\Models\User'],
-        'post' => ['October\Test\Models\Post']
+        'user' => User::class,
+        'post' => Post::class
     ];
 
     public $attachOne = [
-        'photo' => ['System\Models\File']
+        'photo' => \System\Models\File::class
     ];
 
+    /**
+     * @var array hasMany
+     */
+    public $hasMany = [
+        'child_comments' => [
+            Comment::class,
+            'key' => 'parent_comment_id',
+            'scope' => 'withTrashed'
+        ],
+    ];
+
+    /**
+     * scopeIsVisibleWithTrashed
+     */
+    public function scopeIsVisibleWithTrashed($query)
+    {
+        return $query->withTrashed()->isVisible();
+    }
+
+    /**
+     * scopeIsVisible
+     */
     public function scopeIsVisible($query)
     {
         return $query->where('is_visible', true);
     }
 
-    public function getFeelingOptions()
+    /**
+     * getStatusOptions
+     */
+    public function getStatusOptions()
     {
         return [
-            'sad'      => 'Sad',
-            'happy'    => 'Happy',
+            StatusEnum::DRAFT->value => 'Draft',
+            StatusEnum::APPROVED->value => 'Approved',
+            StatusEnum::REJECTED->value => 'Rejected',
+            StatusEnum::PUBLISHED->value => 'Published',
+        ];
+    }
+
+    /**
+     * getFeelingzOptions
+     */
+    public function getFeelingzOptions()
+    {
+        return [
+            'sad' => 'Sad',
+            'happy' => 'Happy',
             'trolling' => "Just trollin' y'all",
         ];
     }

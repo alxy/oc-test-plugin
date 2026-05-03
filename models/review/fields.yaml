@@ -2,23 +2,115 @@
 #  Form Field Definitions
 # ===================================
 
-fields:
-    content:
-        label: Content
-        type: textarea
-        size: small
+tabs:
+    defaultTab: Review
+    fields:
+        content:
+            label: Content
+            type: textarea
+            size: small
+            changeHandler: onChangeContent
 
-    is_positive:
-        label: Positive
-        type: checkbox
+        reviewed_at:
+            label: Reviewed date and time
+            type: datepicker
+            changeHandler: onChangeReviewDate
+            span: auto
+            trigger:
+                action: enable
+                field: is_positive
+                condition: checked
 
-    _internal_comments:
-        label: Internal comments
-        type: textarea
-        size: tiny
-        comment: This field is a black hole, the value will not be saved anywhere.
+        is_positive:
+            label: Positive
+            comment: Check if this review was positive
+            type: checkbox
+            span: auto
 
-    _check_time:
-        label: What time is it?
-        type: timecheckertest
-        commentAbove: Custom form widget with AJAX updating.
+        feature_color:
+            label: Feature Color
+            type: colorpicker
+            allowCustom: false
+
+        _internal_comments:
+            label: Internal comments
+            type: textarea
+            size: tiny
+            comment: This field is a black hole, the value will not be saved anywhere.
+
+        _check_time:
+            label: What time is it?
+            type: timecheckertest
+            commentAbove: Custom form widget with AJAX updating.
+
+        breakdown_type:
+            tab: Breakdown
+            label: Breakdown Type
+            type: dropdown
+            changeHandler: onChangeBreakdownType
+            options:
+                tag_card: Tag card
+                post_card: Post card
+                team_card: Team card
+                icon_card: Icon card
+
+        breakdown:
+            tab: Breakdown
+            type: repeater
+            prompt: Add Review Breakdown
+            form:
+                fields:
+                    stars:
+                        type: dropdown
+                        label: Stars
+                        options:
+                            "1": 1 Star
+                            "2": 2 Star
+                            "3": 3 Star
+                            "4": 4 Star
+                            "5": 5 Star
+                        span: row
+                        spanClass: col-md-3
+                    aspect:
+                        placeholder: Provide an aspect to the review
+                        label: Aspect
+                        type: text
+                        span: row
+                        spanClass: col-md-9
+                        required: true
+                    position:
+                        type: text
+                        label: Position
+                        span: full
+                        trigger:
+                            action: show
+                            field: '^breakdown_type'
+                            condition: value[team_card]
+                    published_at:
+                        type: datepicker
+                        label: Published at
+                        span: full
+                        trigger:
+                            action: show
+                            field: '^breakdown_type'
+                            condition: value[post_card]
+
+        meta[content][refund_rules]:
+            label: Refund
+            tab: Meta
+            type: repeater
+            span: left
+            form:
+                fields:
+                    refund_type:
+                        type: dropdown
+                        options:
+                            customer_request: Customer Request
+                            bank_dispute: Bank Dispute
+                            fraud_xfer: Fraudulent Transaction
+                    refund_amount:
+                        type: number
+                        label: Refund Amount
+                    is_partial:
+                        type: checkbox
+                        label: Partial Refund

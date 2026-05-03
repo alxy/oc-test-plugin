@@ -7,7 +7,6 @@ use Model;
  */
 class Theme extends Model
 {
-
     /**
      * @var string The database table used by the model.
      */
@@ -19,7 +18,7 @@ class Theme extends Model
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
@@ -27,10 +26,10 @@ class Theme extends Model
      * @var array Relations
      */
     public $morphMany = [
-        'reviews' => ['October\Test\Models\Review', 'name' => 'product'],
+        'reviews' => [Review::class, 'name' => 'product'],
     ];
 
     public $morphOne = [
-        'meta' => ['October\Test\Models\Meta', 'name' => 'taggable'],
+        'meta' => [Meta::class, 'name' => 'taggable'],
     ];
 }

@@ -11,7 +11,20 @@ tabs:
         code:
             label: Code
             tab: Details
+            autoFocus: true
+
+        icon:
+            label: Icon
+            type: dropdown
+            optionsPreset: phosphorIcons
+            tab: Details
 
         content:
             label: Content
             tab: Details
+
+        reviews:
+            label: Reviews
+            type: partial
+            path: reviews
+            tab: Reviews

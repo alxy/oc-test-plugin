@@ -20,6 +20,7 @@ class Posts extends Controller
         \Backend\Behaviors\FormController::class,
         \Backend\Behaviors\ListController::class,
         \Backend\Behaviors\RelationController::class,
+        \Backend\Behaviors\ImportExportController::class
     ];
 
     public $formConfig = 'config_post_form.yaml';
@@ -31,6 +32,8 @@ class Posts extends Controller
     ];
 
     public $relationConfig = 'config_relation.yaml';
+
+    public $importExportConfig = 'config_import_export.yaml';
 
     public $requiredPermissions = ['october.test.access_plugin'];
 
@@ -57,6 +60,29 @@ class Posts extends Controller
     {
         $this->asExtension('ListController')->index();
         $this->bodyClass = 'compact-container';
+    }
+
+    public function listExtendQuery($query, $definition = null)
+    {
+        if ($definition === 'posts') {
+            $query->leftJoin('october_test_attributes', 'october_test_posts.status_id', 'october_test_attributes.id');
+            $query->addSelect('october_test_attributes.sort_order as status_sort_order', 'october_test_attributes.name as status_name');
+        }
+    }
+
+    public function formExtendFields($form, $fields)
+    {
+        $fields['name']->value = lcfirst($form->model->name);
+    }
+
+    /**
+     * relationExtendManageFormQuery
+     */
+    public function relationExtendManageFormQuery($field, $query)
+    {
+        if ($field === 'comments[child_comments]') {
+            $query->withTrashed();
+        }
     }
 
     //

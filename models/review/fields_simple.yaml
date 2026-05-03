@@ -3,7 +3,6 @@
 # ===================================
 
 fields:
-
     photo:
         label: Photo
         mode: image
@@ -19,6 +18,11 @@ fields:
         type: textarea
         size: small
         span: right
+
+    feature_color:
+        label: Feature Color
+        type: colorpicker
+        span: left
 
     is_positive:
         label: Positive

@@ -7,11 +7,18 @@ columns:
         label: ID
         searchable: true
         type: partial
+        path: $/october/test/controllers/people/_id.htm
+        sortable: false
+        tooltip:
+            title: I cannot be sorted
+            icon: icon-warning
 
     name:
         label: Name
         searchable: true
         type: partial
+        path: $/october/test/controllers/people/_name.htm
+        tooltip: This is the full name
 
     bio:
         label: Bio
@@ -20,24 +27,35 @@ columns:
 
     expenses:
         label: Expenses
-        format: $ %.2f
+        format: "$ %.2f"
 
     phone:
         label: Phone
         relation: phone
-        select: number
+        select: concat(name, ' ', number)
+
+    brand:
+        label: Brand
+        relation: phone
+        select: brand
+        type: selectable
 
     birth:
         label: Born
         type: timetense
+        invisible: true
 
     birthdate:
         label: Birth day
         type: date
+        invisible: true
 
     birthtime:
         label: Birth time
+        type: time
+        invisible: true
 
     created_at:
         label: Created
         type: timetense
+        invisible: true

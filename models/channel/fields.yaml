@@ -12,9 +12,90 @@ fields:
         select: title
         span: auto
 
-    related_custom:
+    _related_custom:
         valueFrom: related
         label: Related (Custom attribute)
         type: relation
         nameFrom: custom_title
         span: auto
+
+
+tabs:
+    defaultTab: Options Definitions
+    fields:
+        services:
+            label: Services
+            type: taglist
+            mode: array
+            useKey: true
+            customTags: false
+            placeholder: Choose Cervices
+            optionsMethod: getBasicFieldOptions
+            span: full
+
+        _simple_dropdown:
+            label: Dropdown Simple
+            span: auto
+            type: dropdown
+            optionsMethod: getSimpleFieldOptions
+
+        _advanced_dropdown:
+            label: Dropdown Advanced
+            span: auto
+            type: dropdown
+            optionsMethod: getAdvancedFieldOptions
+
+        _simple_radio:
+            label: Radio Simple
+            span: auto
+            type: radio
+            optionsMethod: getSimpleFieldOptions
+
+        _advanced_radio:
+            label: Radio Advanced
+            span: auto
+            type: radio
+            optionsMethod: getAdvancedFieldOptions
+
+        _simple_checkboxlist:
+            label: Checkboxes Simple
+            span: auto
+            type: checkboxlist
+            optionsMethod: getSimpleFieldOptions
+            quickselect: true
+
+        _advanced_checkboxlist:
+            label: Checkboxes Advanced
+            span: auto
+            type: checkboxlist
+            optionsMethod: getAdvancedFieldOptions
+            cumulative: true
+            quickselect: true
+            # disabled: true
+
+        _basic_child_dropdown:
+            label: Dropdown Optgroup
+            span: auto
+            type: dropdown
+            optionsMethod: getBasicChildFieldOptions
+
+        _advanced_taglist:
+            label: TagList Advanced
+            span: full
+            type: taglist
+            optionsMethod: getAdvancedFieldOptions
+
+        _inline_dropdown:
+            type: dropdown
+            label: Inline Dropdown
+            span: row
+            spanClass: col-md-6
+            options:
+                Option Group:
+                    optgroup: true
+                    children:
+                        1: Option 1
+                        2: Option 2
+
+
+

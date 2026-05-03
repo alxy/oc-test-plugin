@@ -1,7 +1,20 @@
 
 posts:
     label: Posts
-    list: ~/plugins/october/test/models/post/columns.yaml
-    form: ~/plugins/october/test/models/post/fields_simple.yaml
-#    manage:
-#        context: relation
+    list: $/october/test/models/post/columns.yaml
+    form: $/october/test/models/post/fields_simple.yaml
+    view:
+        filter: $/october/test/models/post/scopes.yaml
+        showSearch: true
+    manage:
+        showSearch: true
+        filter: $/october/test/models/post/scopes.yaml
+
+countries:
+    label: Country
+    list: $/october/test/models/country/columns_simple.yaml
+    form: $/october/test/models/country/fields_simple.yaml
+    deferredBinding: true
+    structure:
+        showReorder: true
+        showTree: false

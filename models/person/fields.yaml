@@ -9,19 +9,25 @@
 
 fields:
     name:
-        label: Name
+        label: Full Name
+        span: auto
         default: Joe Dirt
         commentAbove: Text field, required. Given name in the first box, preferred name in the second box.
+
+    _previous_names:
+        label: Previous Names
+        span: auto
+        placeholder: Enter previous names
+        commentAbove: Previously used <strong>names, monikers or aliases</strong>
+        commentHtml: true
 
     # Testing form field with no config
     preferred_name:
 
-    _previous_names:
-        label: Previous Names
-
     # Nullable
     is_married:
         label: Married
+        span: auto
         type: dropdown
         emptyOption: Unknown
         options:
@@ -30,6 +36,7 @@ fields:
 
     ajax_options:
         label: AJAX Options
+        span: auto
         comment: These options should be populated using AJAX
         path: $/october/test/controllers/people/_ajax_options.htm
         type: partial
@@ -37,23 +44,29 @@ fields:
     # Record Finder (Default)
     phone:
         context: [create, update, recordfinder]
-        label: Record Finder
+        label: Phone
         comment: Record finder field.
         type: recordfinder
-        list: ~/plugins/october/test/models/phone/columns.yaml
+        list: $/october/test/models/phone/columns.yaml
         title: Please pick a phone
-        prompt: Click the %s to find an alternative phone
         nameFrom: name
         descriptionFrom: number
         searchScope: customSearch
+        inlineOptions: false
 
     # Relation Controller
     phone@relationcontroller:
         label: Relation Controller
         commentAbove: RelationController used as a partial field type.
         type: partial
+        path: phone
 
     # Proxy Fields
+    _section_proxy_fields:
+        context: proxyfields
+        type: section
+        label: Proxy Fields
+
     phone[name]:
         context: proxyfields
         span: auto
@@ -91,7 +104,9 @@ fields:
         type: dropdown
 
 tabs:
-
+    lazy:
+        - Birthday
+        - Activities
     fields:
 
         birth:
@@ -117,6 +132,8 @@ tabs:
             mode: time
             tab: Birthday
             span: auto
+            twelveHour: true
+            hoursOnly: true
 
         favcolor:
             label: Favorite color
@@ -125,11 +142,23 @@ tabs:
             tab: Birthday
             span: auto
 
+        # Record Finder With Alternate Local Key
+        alt_phone:
+            label: Emergency Contact
+            tab: Activities
+            comment: Record finder field that uses custom keys.
+            type: recordfinder
+            list: $/october/test/models/phone/columns.yaml
+            title: Please pick an alternative phone
+            nameFrom: name
+            descriptionFrom: number
+
         sports:
             label: Sports
             tab: Activities
             type: checkboxlist
             span: left
+            cssClass: inline-options
             quickselect: true
             options:
                 adventure: Adventure

@@ -10,19 +10,38 @@ fields:
         commentHtml: true
         span: auto
 
+    slug:
+        label: Slug
+        span: auto
+        commentAbove: Automatically generated
+        disabled: true
+
+    published_at:
+        label: Published date and time
+        type: datepicker
+        span: auto
+        default: "tomorrow + 3 hours 15 minutes"
+
+    user:
+        label: User
+        type: relation
+        span: auto
+        nameFrom: username
+
     # Relation form field (default)
     status:
         label: Status
         type: relation
-        span: auto
         commentAbove: Generic model filtered by relation conditions.
         context: [create, update, relation]
+        useController: false
 
     # Relation Controller
     status@relationcontroller:
         label: Status
         commentAbove: Generic model filtered by relation conditions.
         type: partial
+        path: status
 
     # Record finder
     status@recordfinder:
@@ -31,14 +50,8 @@ fields:
         list: $/october/test/models/attribute/columns.yaml
         nameFrom: name
         descriptionFrom: label
-        span: auto
         commentAbove: Generic model filtered by relation conditions.
-
-    published_at:
-        label: Published date and time
-        type: datepicker
-        span: full
-        default: "tomorrow + 3 hours 15 minutes"
+        path: status
 
 tabs:
     fields:
@@ -49,18 +62,26 @@ tabs:
             label: Comments
             commentAbove: RelationController used as a partial field type.
             type: partial
+            path: comments
             tab: Comments
 
         galleries:
-            label: Galleries
             commentAbove: RelationController demonstrating morphToMany relationship.
             type: partial
             tab: Galleries
+            path: galleries
+
+        galleries_pivot:
+            commentAbove: RelationController demonstrating morphToMany (with pivot) relationship.
+            type: partial
+            tab: Galleries (Pivot)
+            path: galleries_pivot
 
         review:
             label: Review
             commentAbove: RelationController demonstrating morphOne relationship.
             type: partial
+            path: review
             tab: Reviews
 
         # Taglist Tests
@@ -71,9 +92,20 @@ tabs:
             type: taglist
             mode: relation
             nameFrom: name
+            customTags: true
             tab: Tags
 
-        _tags_trigger:
+        # tags:
+        #     label: Tags by Relation (Virtual)
+        #     commentAbove: Enter some tags here first, select them below
+        #     type: taglist
+        #     mode: relation
+        #     nameFrom: fullname
+        #     options: getTagsRelationOptions
+        #     tab: Tags
+        #     customTags: false
+
+        _tags_trigger_a_or_b:
             commentAbove: Enter "a" or "b" as a tag above to hide this
             tab: Tags
             trigger:
@@ -81,8 +113,40 @@ tabs:
                 field: tags[]
                 condition: value[a][b]
 
+        _tags_trigger_empty:
+            commentAbove: Delete all tags above to hide this
+            tab: Tags
+            trigger:
+                action: hide
+                field: tags[]
+                condition: value[]
+
+        _tags_trigger_empty_or_a:
+            commentAbove: Enter "a" as a tag or delete all tags above to hide this
+            tab: Tags
+            trigger:
+                action: hide
+                field: tags[]
+                condition: value[][a]
+
+        _tags_trigger_value:
+            commentAbove: Enter any tag above to hide this
+            tab: Tags
+            trigger:
+                action: hide
+                field: tags[]
+                condition: value[*]
+
+        _tags_trigger_contains_a:
+            commentAbove: Enter any tag containing "a" above to hide this
+            tab: Tags
+            trigger:
+                action: hide
+                field: tags[]
+                condition: value[*a*]
+
         tags_array:
-            label: Tags saved as Array
+            label: Tags (Array)
             type: taglist
             mode: array
             customTags: false
@@ -90,7 +154,7 @@ tabs:
             tab: Tags
 
         tags_string:
-            label: Tags saved as String
+            label: Tags (String)
             type: taglist
             mode: string
             separator: comma
@@ -99,7 +163,7 @@ tabs:
             tab: Tags
 
         tags_array_id:
-            label: Tags saved as Array of IDs
+            label: Tags (Array of IDs)
             type: taglist
             mode: array
             useKey: true
@@ -108,7 +172,7 @@ tabs:
             tab: Tags
 
         tags_string_id:
-            label: Tags saved as String of IDs
+            label: Tags (String of IDs)
             type: taglist
             mode: string
             useKey: true
@@ -116,6 +180,20 @@ tabs:
             customTags: false
             options: true
             tab: Tags
+
+        tags_inline_options:
+            label: Tags (Inline Options)
+            type: taglist
+            mode: array
+            customTags: false
+            useKey: true
+            emptyOption: -- select --
+            options:
+                other: Other
+                sedan: Sedan
+                hatchback: Hatchback
+                convertible: Convertible
+                suv: SUV
 
 secondaryTabs:
     fields:
@@ -132,7 +210,6 @@ secondaryTabs:
             label: Content
             type: markdown
             size: huge
-            mode: split
             tab: Markdown Editor
             commentAbove: Markdown editor field.
 
@@ -142,3 +219,4 @@ secondaryTabs:
             size: huge
             tab: Rich Editor
             commentAbove: Rich editor (WYSIWYG) field.
+            toolbarButtons: insertCustomThing,insertLink,html,undo,redo,bold,italic,underline,paragraphFormat,fontFamily,fontSize,align

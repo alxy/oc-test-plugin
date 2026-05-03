@@ -2,6 +2,7 @@
 
 use BackendMenu;
 use Backend\Classes\Controller;
+use Flash;
 
 /**
  * Users Back-end Controller
@@ -9,9 +10,9 @@ use Backend\Classes\Controller;
 class Users extends Controller
 {
     public $implement = [
-        'Backend.Behaviors.FormController',
-        'Backend.Behaviors.ListController',
-        'Backend.Behaviors.RelationController',
+        \Backend\Behaviors\FormController::class,
+        \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class,
     ];
 
     public $formConfig = 'config_form.yaml';
@@ -27,27 +28,28 @@ class Users extends Controller
         BackendMenu::setContext('October.Test', 'test', 'users');
     }
 
-    public function listFilterExtendScopes($filter)
+    public function relationExtendManageWidget($widget, $field, $model)
     {
-        // Demonstrate how to disable a scope based on the value of another scope
-        if (input('scopeName') === 'disable_roles') {
-            $disableRoles = input('value');
-            if ($disableRoles === 'false') {
-                $disableRoles = false;
-            }
-        } else {
-            $disableRoles = $filter->getScopeValue('disable_roles');
+        if ($field === 'roles') {
+            $widget->bindEvent('list.extendQuery', function($query) {
+                $query->where('name', 'LIKE', '%test%');
+            });
         }
+    }
 
-        if ($disableRoles) {
-            $filter->removeScope('roles');
-        }
+    public function onSelectPeriod()
+    {
+        Flash::success('Selected priod: '.post('period'));
+    }
 
-        $filter->bindEvent('filter.update', function ($params) use ($filter) {
-            $filter->prepareVars();
-            return [
-                '#' . $filter->getId() => $filter->makePartial('filter_scopes'),
-            ];
-        });
+    public function onGetSelectOptions()
+    {
+        return [
+            'results' => [
+                'w25' => 'Width 25',
+                'h40' => 'Height 40',
+                'p90' => 'Padding 40',
+            ]
+        ];
     }
 }

@@ -1,0 +1,12 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: Name
+        translatable: site
+
+    description:
+        label: Description
+        type: textarea

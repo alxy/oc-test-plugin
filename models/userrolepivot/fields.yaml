@@ -7,7 +7,36 @@ fields:
         label: Clearance level
         span: auto
 
+    pivot[evolution]:
+        label: Evolution
+        type: dropdown
+        emptyOption: '--- Choose ---'
+        span: auto
+
     pivot[is_executive]:
         label: Executive
         type: checkbox
+        span: auto
+
+    pivot[country]:
+        span: auto
+        label: Country
+        type: recordfinder
+        recordsPerPage: 20
+        list: $/october/test/models/country/columns_simple.yaml
+        comment: Record finder inside a popup.
+
+    # Unsupported
+    pivot[pic]:
+        span: auto
+        label: Photo
+        type: fileupload
+        comment: Image upload inside a popup.
+        mode: image
+        imageHeight: 150
+        imageWidth: 150
+
+    pivot[salary]:
+        label: Salary
+        type: number
         span: auto

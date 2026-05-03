@@ -1,61 +1,212 @@
 fields:
+    title:
+        label: Title
+        comment: october.test::lang.test.component_name
+
+    parent:
+        label: Parent
+        type: relation
+        span: auto
+        nameFrom: title
+        emptyOption: -- top level --
+        order: 200
 
     type:
         label: Type
         options:
             1: Simple
             2: Complex
-        span: full
+        span: auto
         type: dropdown
+        order: 100
 
-    content:
-        label: Content
-        span: full
-        type: nestedform
-        usePanelStyles: false
-        commentAbove: Everything below is a nested form, with styling disabled.
-        form:
-            tabs:
+tabs:
+    defaultTab: Content
+    fields:
+        use_layout:
+            type: checkbox
+            label: Use Layout
+
+        content:
+            label: Content
+            span: full
+            type: nestedform
+            showPanel: true
+            commentAbove: Everything below is a nested form, with styling disabled.
+            form:
+                tabs:
+                    fields:
+                        title:
+                            label: Title
+                            type: text
+                            tab: Content
+                        colors:
+                            label: Colors
+                            type: nestedform
+                            tab: Content
+                            commentAbove: Colors are a nested form inside a nested form
+                            trigger:
+                                action: show
+                                field: ^type
+                                condition: value[2]
+                            form: $/october/test/models/page/colors.yaml
+                        content:
+                            label: Content
+                            type: richeditor
+                            size: huge
+                            tab: Content
+                        meta_description:
+                            label: Description
+                            type: text
+                            tab: SEO
+                            trigger:
+                                action: show
+                                field: ^type
+                                condition: value[2]
+                        meta_tags:
+                            label: Tags
+                            type: taglist
+                            mode: array
+                            tab: SEO
+                            trigger:
+                                action: show
+                                field: ^type
+                                condition: value[2]
+
+        layout@update:
+            label: Layout
+            type: nestedform
+            useRelation: true
+            form: $/october/test/models/layout/fields.yaml
+            dependsOn: use_layout
+
+        layout@create:
+            label: Layout
+            type: relation
+            nameFrom: id
+
+        _prepopulate_people:
+            label: Prepopulate People
+            type: switch
+            tab: People
+
+        people:
+            tab: People
+            label: People
+            prompt: Add Person
+            span: full
+            type: repeater
+            titleFrom: description
+            dependsOn: _prepopulate_people
+            form:
                 fields:
+                    description:
+                        label: Describe this person
+                        size: tiny
+                        type: textarea
+                    person:
+                        label: Testing Widget Inside Repeater
+                        nameFrom: name
+                        descriptionFrom: description
+                        list: $/october/test/models/person/columns.yaml
+                        filter: $/october/test/models/person/scopes.yaml
+                        type: recordfinder
+                        useRelation: false
+                        modelClass: October\Test\Models\Person
+                        changeHandler: onTestChangeHandler
+
+        ghost_field:
+            tab: Ghost
+            label: Ghost
+            comment: You should never see this field
+
+        ghost_field_2:
+            tab: Ghost
+            label: Ghost 2
+            comment: You should never see this field either
+
+        _alt_ghost_field:
+            tab: Alt Ghost
+            comment: This field should hide its parent tab when [use_layout] is checked
+            trigger:
+                action: hide
+                field: use_layout
+                condition: checked
+
+        devices:
+            tab: Device
+            label: Devices
+            type: taglist
+            options:
+                mobile: mobile
+                tablet: tablet
+                desktop: desktop
+
+        mobile_size:
+            tab: Device
+            label: Mobile size
+            type: number
+            trigger:
+                action: show
+                field: devices[]
+                condition: value[mobile]
+
+        tablet_size:
+            tab: Device
+            label: Tablet size
+            type: number
+            trigger:
+                action: show
+                field: devices[]
+                condition: value[tablet]
+
+        pagebanner:
+            label: Page Banner
+            tab: Page Banner
+            type: relation
+
+secondaryTabs:
+    defaultTab: Images
+    fields:
+        status:
+            type: dropdown
+            label: Status
+
+        mainimage:
+            label: Main Image
+            type: nestedform
+            form:
+                fields:
+                    image:
+                        type: mediafinder
+                        span: full
+                        mode: image
+                        prompt: Pick a nice image
+                        imageWidth: 140
+                        imageHeight: 140
                     title:
                         label: Title
                         type: text
-                        tab: Content
-                    colors:
-                        label: Colors
-                        type: nestedform
-                        tab: Content
-                        commentAbove: Colors are a nested form inside a nested form
-                        trigger:
-                            action: show
-                            field: ^type
-                            condition: value[2]
-                        form: $/october/test/models/page/colors.yaml
-                    content:
-                        label: Content
-                        type: richeditor
-                        size: huge
-                        tab: Content
-                    meta_description:
+                        span: full
+                    description:
                         label: Description
-                        type: text
-                        tab: SEO
-                        trigger:
-                            action: show
-                            field: ^type
-                            condition: value[2]
-                    meta_tags:
-                        label: Tags
-                        type: taglist
-                        mode: array
-                        tab: SEO
-                        trigger:
-                            action: show
-                            field: ^type
-                            condition: value[2]
+                        type: textarea
+                        size: small
+                        span: full
 
-    layout:
-        label: Layout
-        type: nestedform
-        useRelation: true
-        form: $/october/test/models/layout/fields.yaml
+        image:
+            label: Another Image
+            type: mediafinder
+            span: full
+            mode: image
+            prompt: Pick another nice image
+            imageWidth: 140
+            imageHeight: 140
+
+        secondimage:
+            span: full
+            label: Photo
+            type: fileupload
+            mode: image
+            imageHeight: 150
+            imageWidth: 150

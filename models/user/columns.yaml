@@ -10,14 +10,38 @@ columns:
     username:
         label: Username
         searchable: true
+        select: concat(id, ' ', username)
+
+    roles:
+        label: Roles
+        relation: roles
+        select: name
+
+    # @deprecated
+    # roles_count:
+    #     label: Roles
+    #     relation: roles_count
+    #     valueFrom: count
+    #     default: 0
+    #     sortable: false
 
     roles_count:
         label: Roles
         relation: roles
-        select: name order by name desc
+        relationCount: true
+        type: number
 
-    roles_count:
-        label: Roles
-        relation: roles_count
-        valueFrom: count
-        default: 0
+    photo:
+        label: Photo
+        type: image
+        sortable: false
+
+    created_at:
+        label: Created
+        type: timetense
+        invisible: true
+
+    updated_at:
+        label: Updated
+        type: timetense
+        invisible: true

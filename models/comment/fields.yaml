@@ -22,18 +22,33 @@ fields:
         disabled: true
 
     name:
-        label: Name
+        label: Author Name
         commentAbove: Text field, inside a popup.
         span: auto
 
-    error_button:
+    # PHP 8.1
+    # status:
+    #     label: Status
+    #     commentAbove: Enum based options
+    #     type: dropdown
+    #     span: auto
+
+    _error_button:
         type: partial
         comment: This button will throw an error
         span: auto
+        path: error_button
 
 tabs:
 
     fields:
+        child_comments:
+            tab: Children
+            type: relation
+            controller:
+                label: Child Comment
+                list: $/october/test/models/comment/columns.yaml
+                form: $/october/test/models/comment/fields.yaml
 
         breakdown:
             tab: Breakdown
@@ -67,16 +82,20 @@ tabs:
                         prompt: Add evidence to the point
                         form:
                             fields:
-                                 title:
+                                title:
                                     placeholder: Provide evidence to support that point
                                     label: Evidence
                                     type: text
+                                image:
+                                    type: mediafinder
+                                    label: Supporting Documents
+                                    mode: image
 
         mood[feeling]:
             label: Overall feeling
             span: auto
             type: dropdown
-            options: getFeelingOptions
+            optionsMethod: getFeelingzOptions
             tab: Mood
 
         mood[comment]:
@@ -123,6 +142,7 @@ secondaryTabs:
         content_md:
             label: Content
             type: markdown
+            sideBySide: false
             tab: Markdown Editor
             commentAbove: Content inside a tab, inside a popup.
 

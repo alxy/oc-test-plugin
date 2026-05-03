@@ -3,7 +3,6 @@
 # ===================================
 
 fields:
-
     name:
         label: Name
         span: auto
@@ -16,17 +15,78 @@ fields:
             field: name
             type: slug
 
-    is_active:
-        label: Active
-        comment: Check this box to hide some tabs, using depends and trigger API.
-        type: checkbox
-        default: true
-
 tabs:
+    fields:
+        cities:
+            tab: Cities
+            label: Cities
+            type: relation
+
+        content:
+            tab: Content
+            label: Content
+            displayMode: builder
+            prompt: Add content block
+            span: full
+            type: repeater
+            groupKeyFrom: _type
+            groups: $/october/test/config/repeater_content.yaml
+
+        notes:
+            tab: Notes
+            label: Notes
+            displayMode: accordion
+            prompt: Add note
+            span: full
+            type: repeater
+            minItems: 1
+            titleFrom: note
+            useTabs: true
+            form: $/october/test/config/repeater_notes.yaml
+
+        states:
+            tab: States
+            type: repeater
+            form: $/october/test/config/repeater_states.yaml
+            itemsExpanded: false
+
+        _some_field:
+            type: text
+            tab: Related
+            label: Some Field That Updates Randomly
+            dependsOn: locations
+
+        locations:
+            tab: Related
+            label: Locations
+            prompt: Add new location
+            span: full
+            type: repeater
+            minItems: 2
+            maxItems: 5
+            form: $/october/test/config/repeater_locations.yaml
+
+        sisters:
+            tab: Sister Countries
+            type: repeater
+            form: $/october/test/config/repeater_country_sisters.yaml
+
+        brothers:
+            tab: Brother Countries
+            type: repeater
+            groupKeyFrom: type
+            groups: $/october/test/config/repeater_country_brothers.yaml
+
+secondaryTabs:
     lazy:
-        - Currency
+        - Locale
 
     fields:
+        posts:
+            label: Posts
+            type: partial
+            tab: Posts
+            path: posts
 
         types:
             tab: Characters
@@ -34,13 +94,20 @@ tabs:
             commentAbove: Character known to spawn in this location
             type: relation
 
+        is_active:
+            label: Active
+            comment: Check this box to hide some tabs, using depends and trigger API.
+            type: checkbox
+            default: true
+            tab: Locale
+
         language:
             label: Language
-            tab: Language
+            tab: Locale
 
         currency:
             label: Currency with default value and trigger
-            tab: Currency
+            tab: Locale
             default: 'I have a default value!'
             trigger:
                 field: is_active
@@ -54,12 +121,22 @@ tabs:
             type: section
             dependsOn: pages
 
+        _disable_pages:
+            label: Enable Pages
+            type: checkbox
+            tab: Pages
+
         pages:
             tab: Pages
             type: checkboxlist
+            trigger:
+                action: enable
+                field: _disable_pages
+                condition: checked
 
         _page_404:
             tab: Pages
+            span: auto
             commentAbove: This field is enabled when the 404 page is selected
             trigger:
                 field: pages[]
@@ -68,85 +145,9 @@ tabs:
 
         _page_error:
             tab: Pages
+            span: auto
             commentAbove: This field is hidden when the error page is selected
             trigger:
                 field: pages[]
                 condition: value[error]
                 action: hide
-
-        states:
-            tab: States
-            type: repeater
-            form:
-                fields:
-                    title:
-                        label: State
-                    item:
-                        type: repeater
-                        prompt: Add new suburb
-                        form:
-                            fields:
-                                subtitle:
-                                    label: Suburb
-                                    span: full
-                                safety:
-                                    type: datatable
-                                    stretch: 1
-                                    stretch: true
-                                    dynamicHeight: true
-                                    adding: true
-                                    deleting: true
-                                    btnAddRowLabel: Add Crime Type
-                                    btnDeleteRowLabel: Delete Crime Type
-                                    span: full
-                                    columns:
-                                        id:
-                                            title:
-                                            width: 30px
-                                            readOnly: true
-                                        label:
-                                            title: Label
-                                            type: string
-                                            validation:
-                                                required:
-                                                    message: Please enter label
-                                        rating:
-                                            title: Rating
-                                            type: string
-                                            validation:
-                                                required:
-                                                    message: Please enter rating
-                                                float:
-                                                    message: Rating should be a float
-                                        type:
-                                            title: Type
-                                            type: dropdown
-                                            validation:
-                                                required:
-                                                    message: Please select a type
-        locations:
-            tab: Related
-            label: Locations
-            prompt: Add new location
-            span: full
-            type: repeater
-            form:
-                fields:
-                    country:
-                        label: Country
-                        span: auto
-                        type: dropdown
-                    state:
-                        label: State
-                        span: auto
-                        dependsOn: country
-                        type: dropdown
-
-        content:
-            tab: Content
-            label: Content
-            prompt: Add content block
-            span: full
-            type: repeater
-
-            groups: $/october/test/config/repeater_fields.yaml

@@ -5,6 +5,9 @@
 # Model List Column configuration
 list: $/october/test/models/page/columns.yaml
 
+# Displays the list filter
+filter: $/october/test/models/page/scopes.yaml
+
 # Model Class name
 modelClass: October\Test\Models\Page
 

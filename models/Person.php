@@ -7,7 +7,6 @@ use Model;
  */
 class Person extends Model
 {
-
     use \October\Rain\Database\Traits\Nullable;
     use \October\Rain\Database\Traits\Validation;
 
@@ -22,7 +21,7 @@ class Person extends Model
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
@@ -52,16 +51,50 @@ class Person extends Model
      * @var array Relations
      */
     public $hasOne = [
-        'phone' => ['October\Test\Models\Phone', 'key' => 'person_id', 'scope' => 'isActive'],
-        'alt_phone' => ['October\Test\Models\Phone', 'key' => 'person_id']
+        'phone' => [
+            \October\Test\Models\Phone::class,
+            'key' => 'person_id',
+            'scope' => 'isActive'
+        ],
+        'alt_phone' => [
+            \October\Test\Models\Phone::class,
+            'key' => 'person_id',
+            'otherKey' => 'alt_id',
+        ]
     ];
+
+    /**
+     * filterFields
+     */
+    public function filterFields($fields)
+    {
+        // $fields->phone->hidden = true;
+    }
 
     /**
      * __construct
      */
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
+        parent::__construct($attributes);
+
         // Default value, model driven
         $this->preferred_name = 'Joey';
+    }
+
+    /**
+     * afterCreate
+     */
+    public function afterCreate()
+    {
+        // Spoof a alternative ID
+        $altId = $this->id + 100;
+
+        $this->newQueryWithoutScopes()
+            ->where($this->getKeyName(), $this->id)
+            ->update(['alt_id' => $altId])
+        ;
+
+        $this->alt_id = $altId;
     }
 }

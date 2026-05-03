@@ -1,0 +1,45 @@
+uuid: 6c7a0f9b-957b-46a7-8431-1a0fa7d09b0f
+type: structure
+handle: Test\Blog\Categories
+name: Test Categories
+drafts: true
+pagefinder: false
+
+navigation:
+    mode: secondary
+    parent: Test\Blog
+    icon: icon-star
+    order: 150
+
+structure:
+    maxDepth: 3
+
+fields:
+    mycontentfield:
+        label: Custom Content Field
+        type: mycontentfield
+        firstColor: red
+        secondColor: blue
+
+    description@update:
+        label: Description (Update)
+
+    description@create:
+        label: Description (Create)
+
+    status:
+        label: Status
+        type: text
+
+    reference:
+        label: Reference
+        type: pagefinder
+
+    items:
+        type: repeater
+        form:
+            fields:
+                title:
+                    label: Title
+                price:
+                    label: Price

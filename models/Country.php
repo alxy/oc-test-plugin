@@ -1,5 +1,6 @@
 <?php namespace October\Test\Models;
 
+use Str;
 use Model;
 use Cms\Classes\Page;
 
@@ -8,6 +9,13 @@ use Cms\Classes\Page;
  */
 class Country extends Model
 {
+    use \October\Rain\Database\Traits\Sortable;
+    use \October\Rain\Database\Traits\Validation;
+
+    /**
+     * implement the TranslatableModel behavior softly
+     */
+    public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
 
     /**
      * @var string The database table used by the model.
@@ -15,38 +23,85 @@ class Country extends Model
     public $table = 'october_test_countries';
 
     /**
-     * @var array Guarded fields
+     * @var array guarded fields
      */
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
     /**
-     * @var array Jsonable fields
+     * @var array jsonable fields
      */
-    protected $jsonable = ['pages', 'states', 'locations', 'content'];
+    protected $jsonable = ['pages', 'states', 'locations', 'content', 'notes', 'footer'];
 
     /**
-     * @var array Relations
+     * @var array translatable
+     */
+    public $translatable = ['name', 'states', 'content', 'footer', 'is_active'];
+
+    /**
+     * @var array Rules
+     */
+    public $rules = [
+        'name' => 'required',
+    ];
+
+    /**
+     * @var array hasMany
+     */
+    public $hasMany = [
+        'cities' => [
+            City::class,
+            'key' => 'custom_country_id',
+            'conditions' => '2 = 2'
+        ],
+        'sisters' => [
+            RepeaterItem::class,
+            'key' => 'parent_id',
+            'delete' => true
+        ],
+        'brothers' => [
+            CountryBrother::class,
+            'key' => 'parent_id',
+            'delete' => true
+        ]
+    ];
+
+    /**
+     * @var array belongsToMany
      */
     public $belongsToMany = [
         'types' => [
-            'October\Test\Models\Attribute',
+            Attribute::class,
             'table' => 'october_test_countries_types',
             'conditions' => "type = 'general.type'"
         ],
     ];
 
     /**
-     * Softly implement the TranslatableModel behavior.
+     * @var array hasManyThrough
      */
-    public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
+    public $hasManyThrough = [
+        'posts' => [
+            Post::class,
+            'through' => User::class
+        ],
+    ];
 
-    public $translatable = ['states', 'content'];
+    /**
+     * getCountryNameCustomAttribute
+     */
+    public function getCountryNameCustomAttribute()
+    {
+        return "[{$this->name}]";
+    }
 
+    /**
+     * filterFields
+     */
     public function filterFields($fields, $context = null)
     {
         // Repeater field shares this logic
@@ -63,6 +118,10 @@ class Country extends Model
 
         if ($this->is_active) {
             $fields->currency->hidden = true;
+        }
+
+        if (isset($fields->_some_field)) {
+            $fields->_some_field->value = Str::random();
         }
     }
 

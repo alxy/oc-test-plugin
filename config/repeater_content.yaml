@@ -1,0 +1,114 @@
+# ===================================
+#  Used by Grouped Repeater
+# ===================================
+
+_ignored:
+    name: Ignore this group
+
+recurse:
+    name: Recurse
+    description: Repeater recursion
+    icon: icon-refresh
+    fields:
+        children:
+            label: Content
+            prompt: Add content block
+            span: full
+            type: repeater
+            groups: $/october/test/config/repeater_content.yaml
+
+textarea:
+    name: Textarea
+    description: Basic text field
+    titleFrom: text_area
+    icon: icon-file-text-o
+    useTabs: true
+    fields:
+        text_area:
+            label: Text Content
+            tab: Content
+            type: textarea
+            size: large
+            default: Whether 'tis nobler in the mind to suffer. The slings and arrows of outrageous fortune, Or to take arms against a sea of troubles. And by opposing end them.
+        selection:
+            label: Selection
+            tab: Extras
+            type: dropdown
+            options:
+                a: a
+                b: b
+
+quote:
+    name: Quote
+    description: Quote item
+    icon: icon-quote-right
+    titleFrom: quote_content
+    fields:
+        quote_position:
+            span: auto
+            label: Quote Position
+            type: radio
+            cssClass: inline-options
+            options:
+                left: Left
+                center: Center
+                right: Right
+        quote_content:
+            span: auto
+            label: Details
+            type: text
+            default: I like turtles
+
+image:
+    name: Image
+    description: Pick something from the media library
+    icon: icon-photo
+    fields:
+        img_upload:
+            span: auto
+            label: Image
+            type: mediafinder
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+
+        img_position:
+            span: auto
+            label: Image Position
+            type: radio
+            options:
+                left: Left
+                center: Center
+                right: Right
+
+taglist:
+    name: Tag list
+    description: Tag list in string mode
+    icon: icon-tags
+    fields:
+        tags:
+            label: Tag list
+            type: taglist
+            mode: string
+
+nestedform:
+    name: Nested Form
+    description: Testing a nested form
+    icon: icon-cogs
+    fields:
+        content:
+            type: nestedform
+            showPanel: false
+            form:
+                fields:
+                    added_at:
+                        label: Date Added
+                        type: datepicker
+                    details:
+                        label: Details
+                        type: textarea
+                    title:
+                        label: This is the title
+                        type: text
+
+

@@ -7,6 +7,8 @@ use Model;
  */
 class City extends Model
 {
+    use \October\Rain\Database\Traits\Validation;
+
     /**
      * @var string The database table used by the model.
      */
@@ -19,13 +21,41 @@ class City extends Model
     public $timestamps = false;
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
-    protected $fillable = ['country_id', 'name'];
+    protected $fillable = ['custom_country_id', 'name'];
 
     /**
-     * @var array Relations
+     * @var array rules
      */
-    public $hasMany = ['locations' => Location::class];
-    public $belongsTo = ['country' => Country::class];
+    public $rules = [
+        'country' => 'required'
+    ];
+
+    /**
+     * @var array hasMany
+     */
+    public $hasMany = [
+        'locations' => Location::class
+    ];
+
+    /**
+     * @var array belongsTo
+     */
+    public $belongsTo = [
+        'country' => [
+            Country::class,
+            'key' => 'custom_country_id'
+        ],
+    ];
+
+    /**
+     * scopeFilterCities
+     */
+    public function scopeFilterCities($query, $model)
+    {
+        if ($countryId = $model->country_id) {
+            $query->where('custom_country_id', $countryId);
+        }
+    }
 }

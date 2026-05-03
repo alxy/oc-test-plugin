@@ -5,18 +5,29 @@
 fields:
     username:
         label: Username
-        span: auto
+        span: row
+        spanClass: col-md-5
         type: partial
         path: field_uppercase_name
         comment: This username should always appear as uppercase.
 
+    country:
+        label: Country
+        type: relation
+        span: row
+        spanClass: col-md-4
+        nameFrom: name
+        emptyOption: -- select --
+
     security_code:
         label: Security Code
-        span: auto
+        span: row
+        spanClass: col-md-3
         type: number
         comment: This code should appear as a number.
 
 tabs:
+    activeTab: Pivot Model
     fields:
 
         # Relation Controller (Default)
@@ -25,6 +36,7 @@ tabs:
             label: Roles
             commentAbove: RelationController used as a partial field type.
             type: partial
+            path: roles
             tab: Standard
 
         roles_pivot:
@@ -32,19 +44,22 @@ tabs:
             label: Roles
             commentAbove: RelationController with pivot data.
             type: partial
-            tab: Pivot data
+            path: roles_pivot
+            tab: Pivot Data
 
         roles_pivot_model:
             context: [update, relationcontroller]
             label: Roles
             commentAbove: RelationController using a custom pivot model with validation.
             type: partial
-            tab: Pivot model
+            path: roles_pivot_model
+            tab: Pivot Model
 
         # Relation form field
         roles@relation:
             label: Roles
             type: relation
+            useController: false
             commentAbove: Standard relation field, uses validation.
             tab: Standard
 
@@ -57,11 +72,23 @@ tabs:
             commentAbove: Tag list relation mode.
             tab: Standard
 
+        posts:
+            label: Posts
+            type: relation
+            useController: true
+            tab: Posts
+
+        _products:
+            label: Invoice Position
+            tab: Products
+            type: repeater
+            groups: $/october/test/models/user/position_repeater.yaml
+
 secondaryTabs:
     fields:
 
         media_file:
-            label: Media Finder
+            label: Media (File)
             span: auto
             type: mediafinder
             commentAbove: File selection from the Media Library.
@@ -69,12 +96,38 @@ secondaryTabs:
             mode: file
 
         media_image:
-            label: Media Finder
+            label: Media (Image)
             span: auto
             type: mediafinder
             commentAbove: Photo selection from the Media Library.
             tab: Media Manager
             mode: image
+            thumbOptions: false
+
+        media_files:
+            label: Media (Multi File)
+            span: auto
+            type: mediafinder
+            commentAbove: File selection from the Media Library.
+            tab: Media Manager
+            mode: file
+
+        media_images:
+            label: Media (Multi Image)
+            span: auto
+            type: mediafinder
+            commentAbove: Photo selection from the Media Library.
+            tab: Media Manager
+            mode: image
+            maxItems: 2
+
+        media_folder:
+            label: Media (Folder)
+            span: auto
+            type: mediafinder
+            commentAbove: Folder selection from the Media Library.
+            tab: Media Manager
+            mode: folder
 
         photo:
             label: Photo
@@ -111,6 +164,7 @@ secondaryTabs:
             commentAbove: Multiple secure image upload inside a tab.
             mode: image
             tab: Multi Image
+            maxFiles: 2
 
         certificate:
             label: Certificate

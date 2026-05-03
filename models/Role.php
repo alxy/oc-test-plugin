@@ -7,7 +7,6 @@ use Model;
  */
 class Role extends Model
 {
-
     /**
      * @var string The database table used by the model.
      */
@@ -19,7 +18,7 @@ class Role extends Model
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
@@ -27,11 +26,18 @@ class Role extends Model
      * @var array Relations
      */
     public $belongsToMany = [
-        'users' => ['October\Test\Models\User', 'table' => 'october_test_users_roles']
+        'users' => [User::class, 'table' => 'october_test_users_roles']
     ];
 
     public $attachMany = [
-        'photos' => ['System\Models\File'],
+        'photos' => \System\Models\File::class,
     ];
 
+    /**
+     * scopeApplyRoleOptionsFilter
+     */
+    public function scopeApplyRoleOptionsFilter($query)
+    {
+        return $query->where('id', '<>', 1);
+    }
 }

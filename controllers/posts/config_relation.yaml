@@ -4,16 +4,20 @@
 
 comments:
     label: Comment
-    list: ~/plugins/october/test/models/comment/columns.yaml
-    form: ~/plugins/october/test/models/comment/fields.yaml
-    readOnly: true
+    list: $/october/test/models/comment/columns.yaml
+    form: $/october/test/models/comment/fields.yaml
+    # readOnly: true
+    view:
+        filter: $/october/test/models/comment/scopes.yaml
     manage:
         context: relation
+        recordsPerPage: 10
+        showSearch: true
 
 status:
     label: Status
-    form: ~/plugins/october/test/models/attribute/fields.yaml
-    list: ~/plugins/october/test/models/attribute/columns.yaml
+    form: $/october/test/models/attribute/fields.yaml
+    list: $/october/test/models/attribute/columns.yaml
     view:
         toolbarButtons: link|unlink
 
@@ -28,10 +32,23 @@ galleries:
     manage:
         form: $/october/test/models/gallery/fields_simple.yaml
 
+galleries_pivot:
+    label: Galleries
+    view:
+        list: $/october/test/models/gallery/columns.yaml
+        toolbarButtons: link|unlink
+    manage:
+        form: $/october/test/models/gallery/fields_simple.yaml
+    pivot:
+        form:
+            fields:
+                pivot[commission_amount]:
+                    label: Commission Amount
+                    commentAbove: 'in %'
 review:
     label: Review
     view:
         form: $/october/test/models/review/fields_simple.yaml
-        toolbarButtons: update
+        list: $/october/test/models/review/columns.yaml
     manage:
         form: $/october/test/models/review/fields_simple.yaml

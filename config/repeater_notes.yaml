@@ -1,0 +1,19 @@
+# ===================================
+#  Used as a Simple Repeater
+# ===================================
+
+fields:
+    note:
+        tab: Notes
+        span: full
+        type: richeditor
+
+    person:
+        tab: Additional Information
+        label: Standalone Record Finder
+        nameFrom: name
+        descriptionFrom: description
+        list: $/october/test/models/person/columns.yaml
+        type: recordfinder
+        useRelation: false
+        modelClass: October\Test\Models\Person

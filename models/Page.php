@@ -3,15 +3,19 @@
 use Model;
 
 /**
- * Model
+ * Page
  */
 class Page extends Model
 {
     use \October\Rain\Database\Traits\Validation;
 
-    /*
-     * Disable timestamps by default.
-     * Remove this line if timestamps are defined in the database table.
+    /**
+     * implement the TranslatableModel behavior softly
+     */
+    public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
+
+    /**
+     * @var bool timestamps disabled by default
      */
     public $timestamps = false;
 
@@ -20,8 +24,24 @@ class Page extends Model
      */
     public $table = 'october_test_pages';
 
-    public $jsonable = [
-        'content'
+    /**
+     * @var array jsonable attribute names that are json encoded and decoded from the database
+     */
+    protected $jsonable = [
+        'people',
+        'content',
+        'mainimage'
+    ];
+
+    /**
+     * @var array translatable
+     */
+    public $translatable = [
+        ['title', 'fallback' => false],
+        'content',
+        'mainimage',
+        'image',
+        'secondimage'
     ];
 
     /**
@@ -33,6 +53,85 @@ class Page extends Model
     ];
 
     public $belongsTo = [
+        'parent' => Page::class,
         'layout' => Layout::class,
+        'pagebanner' => PageBanner::class,
     ];
+
+    public $attachOne = [
+        'secondimage' => \System\Models\File::class
+    ];
+
+    /**
+     * beforeValidate
+     */
+    public function beforeValidate()
+    {
+        if ($this->id === 3) {
+            $this->rules += [
+                'parent' => 'required',
+                'parent.title' => 'size:10'
+            ];
+        }
+    }
+
+    /**
+     * getParentScopeOptions
+     */
+    public function getParentScopeOptions()
+    {
+        return $this->whereNull('parent_id')->pluck('title', 'id')->all();
+    }
+
+    /**
+     * getStatusOptions
+     */
+    public function getStatusOptions()
+    {
+        return [
+            0  => 'Not Validated',
+            10 => 'Main Collection',
+            11 => 'User Collection',
+            12 => 'Skinfile Added',
+            20 => 'Blacklisted',
+            21 => 'Deleted',
+        ];
+    }
+
+    /**
+     * filterFields
+     */
+    public function filterFields($fields, $context = null)
+    {
+        if ($fields->layout) {
+            $fields->layout->hidden(!$this->use_layout);
+        }
+
+        // Hide ghosted fields
+        foreach ($fields as $field) {
+            if (starts_with($field->fieldName, 'ghost_')) {
+                $field->hidden();
+            }
+        }
+
+        // Nested repeater item logic
+        if ($context === 'update' && isset($fields->person)) {
+            if ($fields->person->value) {
+                $fields->description->comment = "Person ID: {$fields->person->value}";
+            }
+        }
+
+        // Prepopulate people repeater
+        if ($context === 'refresh' && $fields->_prepopulate_people !== null) {
+            if ($fields->_prepopulate_people->value) {
+                $fields->people->value = [
+                    ['description' => 'First Person'],
+                    ['description' => 'Second Person']
+                ];
+            }
+            else {
+                $fields->people->value = [];
+            }
+        }
+    }
 }

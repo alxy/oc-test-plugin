@@ -3,7 +3,7 @@
 use Model;
 
 /**
- * Post Model
+ * Tag Model
  */
 class Tag extends Model
 {
@@ -20,7 +20,7 @@ class Tag extends Model
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
@@ -32,7 +32,7 @@ class Tag extends Model
     ];
 
     /**
-     * @var bool Use timetamps
+     * @var bool Use timestamps
      */
     public $timestamps = false;
 
@@ -47,4 +47,12 @@ class Tag extends Model
             'otherKey' => 'post_id'
         ]
     ];
+
+    /**
+     * getFullNameAttribute
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' Grossbard';
+    }
 }

@@ -1,0 +1,21 @@
+# ===================================
+#  Relation Behavior Config
+# ===================================
+
+posts:
+    label: Posts
+    list: $/october/test/models/post/columns.yaml
+    form: $/october/test/models/post/fields_simple.yaml
+    view:
+        showCheckboxes: false
+
+cities:
+    label: Cities
+    manage:
+        form: $/october/test/models/city/fields.yaml
+        list: $/october/test/models/city/columns.yaml
+        recordsPerPage: 20
+    view:
+        list: $/october/test/models/city/columns.yaml
+        toolbarButtons: false
+        recordsPerPage: 20

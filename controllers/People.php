@@ -2,11 +2,12 @@
 
 use Mail;
 use Flash;
+use Response;
 use BackendMenu;
 use October\Test\Models\Phone;
-use Backend\Classes\FormField;
 use Backend\Classes\Controller;
 use Backend\FormWidgets\DataTable;
+use AjaxException;
 
 /**
  * People Back-end Controller
@@ -14,9 +15,9 @@ use Backend\FormWidgets\DataTable;
 class People extends Controller
 {
     public $implement = [
-        'Backend.Behaviors.FormController',
-        'Backend.Behaviors.ListController',
-        'Backend.Behaviors.RelationController',
+        \Backend\Behaviors\FormController::class,
+        \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class,
     ];
 
     public $formConfig = 'config_form.yaml';
@@ -30,6 +31,28 @@ class People extends Controller
         parent::__construct();
 
         BackendMenu::setContext('October.Test', 'test', 'people');
+    }
+
+    public function create()
+    {
+        BackendMenu::setContextSideMenu('people_create');
+
+        return $this->asExtension('FormController')->create();
+    }
+
+    public function onShowAjaxError()
+    {
+        throw new AjaxException(['messageFromData' => 'This message came from a smart error 406.']);
+    }
+
+    public function onShowFlashMessage()
+    {
+        Flash::success('All good');
+    }
+
+    public function onModalShowTest()
+    {
+        return $this->makePartial('test_modal');
     }
 
     public function onSendTestEmail()
@@ -51,6 +74,10 @@ class People extends Controller
         Mail::rawTo('admin@domain.tld', 'Hello friend');
         Mail::send('october.test::mail.some_html', $data, $recptFunc);
         Mail::sendTo('admin@domain.tld', 'october.test::mail.some_html', $data);
+        Mail::sendTo('admin@domain.tld', 'october.test::mail.with_template', $data);
+
+        // Database stored
+        Mail::sendTo('test@email.tld', 'october.test::mail.test-message', ['user' => 'Some Guy']);
 
         Flash::success('Done');
     }
@@ -59,18 +86,28 @@ class People extends Controller
     {
         // Default value, form driven
         if ($this->formGetContext() === 'create') {
-            $model->previous_names = 'Hippo, Campus';
+            $model->_previous_names = 'Hippo, Campus';
         }
 
-        /*
-         * Init proxy field model if we are creating the model
-         * and the context is proxy fields.
-         */
+        // Init proxy field model if we are creating the model
+        // and the context is proxy fields.
         if ($this->formGetContext() === 'proxyfields' && !$model->phone) {
             $model->phone = new Phone;
         }
 
         return $model;
+    }
+
+    public function formGetConfig()
+    {
+        $config = $this->asExtension('FormController')->formGetConfig();
+
+        $config->form = $this->makeConfig($config->form);
+
+        // Set the active tab dynamically
+        $config->form->tabs['activeTab'] = 'Activities';
+
+        return $config;
     }
 
     public function onGetOptions()
@@ -89,9 +126,9 @@ class People extends Controller
         $config  = $this->makeConfig([
             'toolbar' => false,
             'columns' => [
-                'type'   => [
-                    'title'   => 'Widget Type',
-                    'type'    => 'dropdown',
+                'type' => [
+                    'title' => 'Widget Type',
+                    'type' => 'dropdown',
                     'options' => [
                         'petty' => 'Petty',
                         'minor' => 'Minor',
@@ -102,17 +139,26 @@ class People extends Controller
             ],
         ]);
 
-        $field = new FormField('add_database_columns', 'add_database_columns');
-        $field->value = [
-            ['a']
-        ];
-
-        $datatable = new DataTable($this, $field, $config);
+        $datatable = $this->makeFormWidget(DataTable::class, 'add_database_columns', $config);
         $datatable->alias = 'add_database_columns_datatable';
         $datatable->bindToController();
 
         return $this->makePartial('datatable', [
             'datatable' => $datatable,
         ]);
+    }
+
+    /**
+     * onDownloadOrPrompt will randomly show a popup or download a file
+     */
+    public function onDownloadOrPrompt()
+    {
+        if (rand() % 2 === 0) {
+            return $this->makePartial('download_prompt');
+        }
+
+        $imagePath = base_path('modules/media/tests/fixtures/media/images/small.png');
+
+        return Response::download($imagePath, 'small.png');
     }
 }

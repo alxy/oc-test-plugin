@@ -5,28 +5,50 @@
 roles:
     label: Role
     view:
-        list: ~/plugins/october/test/models/role/columns.yaml
+        list: $/october/test/models/role/columns.yaml
+        filter: $/october/test/models/role/scopes.yaml
         showSearch: true
     manage:
-        list: ~/plugins/october/test/models/role/columns.yaml
-        form: ~/plugins/october/test/models/role/fields.yaml
+        title: Manage Roles
+        list: $/october/test/models/role/columns.yaml
+        form: $/october/test/models/role/fields.yaml
+        filter: $/october/test/models/role/scopes.yaml
 
 roles_pivot:
     label: Role
     view:
-        list: ~/plugins/october/test/models/userrolepivot/columns.yaml
+        list: $/october/test/models/userrolepivot/columns_basic.yaml
+        toolbarButtons: add|remove|create
+        filter: $/october/test/models/role/scopes.yaml
         showSearch: true
     manage:
-        list: ~/plugins/october/test/models/role/columns.yaml
+        list: $/october/test/models/role/columns.yaml
+        filter: $/october/test/models/role/scopes.yaml
+        form: $/october/test/models/role/fields.yaml
+        showCheckboxes: true
     pivot:
-        form: ~/plugins/october/test/models/userrolepivot/fields.yaml
+        form: $/october/test/models/userrolepivot/fields_basic.yaml
 
 roles_pivot_model:
     label: Role
     view:
-        list: ~/plugins/october/test/models/userrolepivot/columns.yaml
+        list: $/october/test/models/userrolepivot/columns.yaml
+        toolbarButtons: add|remove|create
         showSearch: true
+        recordsPerPage: 2
     manage:
-        list: ~/plugins/october/test/models/role/columns.yaml
+        list: $/october/test/models/role/columns.yaml
+        form: $/october/test/models/role/fields.yaml
     pivot:
-        form: ~/plugins/october/test/models/userrolepivot/fields.yaml
+        form: $/october/test/models/userrolepivot/fields.yaml
+
+posts:
+    label: Post
+    view:
+        showSearch: true
+        list: $/october/test/models/post/columns.yaml
+        form: $/october/test/models/post/fields_simple.yaml
+        toolbarButtons: create|delete
+    manage:
+        list: $/october/test/models/post/columns.yaml
+        form: $/october/test/models/post/fields_simple.yaml

@@ -7,6 +7,8 @@ use Model;
  */
 class Review extends Model
 {
+    use \October\Rain\Database\Traits\Validation;
+
     /**
      * @var string The database table used by the model.
      */
@@ -18,9 +20,22 @@ class Review extends Model
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
+
+    /**
+     * @var array Jsonable fields
+     */
+    protected $jsonable = ['breakdown', 'meta'];
+
+    /**
+     * @var array Rules
+     */
+    public $rules = [
+        'feature_color' => 'required',
+        'breakdown.*.aspect' => 'required',
+    ];
 
     /**
      * @var array Relations
@@ -30,6 +45,6 @@ class Review extends Model
     ];
 
     public $attachOne = [
-        'photo' => ['System\Models\File']
+        'photo' => \System\Models\File::class
     ];
 }

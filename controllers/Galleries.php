@@ -9,9 +9,9 @@ use Backend\Classes\Controller;
 class Galleries extends Controller
 {
     public $implement = [
-        'Backend.Behaviors.FormController',
-        'Backend.Behaviors.ListController',
-        'Backend.Behaviors.RelationController',
+        \Backend\Behaviors\FormController::class,
+        \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class
     ];
 
     public $formConfig = 'config_form.yaml';
@@ -25,5 +25,14 @@ class Galleries extends Controller
         parent::__construct();
 
         BackendMenu::setContext('October.Test', 'test', 'galleries');
+
+        \Event::listen('backend.form.extendFields', static function ($form) {
+            if ($form->getController() instanceof \October\Test\Controllers\Galleries) {
+                if ($posts = $form->getField('posts')) {
+                    $posts->readOnly = true;
+                    // $posts->previewMode = true;
+                }
+            }
+        });
     }
 }

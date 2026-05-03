@@ -8,7 +8,13 @@ use October\Test\Models\Tag;
  */
 class Post extends Model
 {
+    use \October\Rain\Database\Traits\Sluggable;
     use \October\Rain\Database\Traits\Validation;
+
+    /**
+     * implement the TranslatableModel behavior softly
+     */
+    // public $implement = ['@RainLab.Translate.Behaviors.TranslatableModel'];
 
     /**
      * @var string The database table used by the model.
@@ -21,14 +27,24 @@ class Post extends Model
     protected $guarded = [];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
     /**
      * @var array Jsonable fields
      */
-    protected $jsonable = ['tags_array', 'tags_array_id'];
+    protected $jsonable = ['tags_array', 'tags_array_id', 'tags_inline_options'];
+
+    /**
+     * @var array slugs for these attributes.
+     */
+    protected $slugs = ['slug' => 'name'];
+
+    /**
+     * translatable
+     */
+    // public $translatable = ['content_html'];
 
     /**
      * @var array Rules
@@ -41,17 +57,22 @@ class Post extends Model
      * @var array Relations
      */
     public $hasMany = [
-        'comments' => ['October\Test\Models\Comment', 'scope' => 'isVisible'],
-        'comments_count' => ['October\Test\Models\Comment', 'scope' => 'isVisible', 'count' => true]
+        'comments' => [Comment::class, 'scope' => 'isVisible'],
+        // @deprecated
+        // 'comments_count' => ['October\Test\Models\Comment', 'scope' => 'isVisible', 'count' => true]
     ];
 
     public $belongsTo = [
-        'status' => ['October\Test\Models\Attribute', 'conditions' => "type = 'general.status'"],
+        'status' => [
+            Attribute::class,
+            'conditions' => "type = 'general.status'"
+        ],
+        'user' => User::class,
     ];
 
     public $belongsToMany = [
         'tags' => [
-            'October\Test\Models\Tag',
+            Tag::class,
             'table' => 'october_test_posts_tags',
             'key' => 'post_id',
             'otherKey' => 'tag_id'
@@ -59,34 +80,60 @@ class Post extends Model
     ];
 
     public $morphOne = [
-        'review' => ['October\Test\Models\Review', 'name' => 'product'],
+        'review' => [Review::class, 'name' => 'product'],
     ];
 
     public $morphToMany = [
-        'galleries' => ['October\Test\Models\Gallery', 'name' => 'entity', 'table' => 'october_test_gallery_entity'],
+        'galleries' => [
+            Gallery::class,
+            'name' => 'entity',
+            'table' => 'october_test_gallery_entity'
+        ],
+        'galleries_pivot' => [
+            Gallery::class,
+            'name' => 'entity',
+            'table' => 'october_test_gallery_entity',
+            'pivot' => ['commission_amount']
+        ],
     ];
 
-    //
-    // Options
-    //
+    /**
+     * getTagsRelationOptions
+     */
+    public function getTagsRelationOptions($value, $formData)
+    {
+        return Tag::all()->lists('fullname', 'id');
+    }
 
+    /**
+     * getTagsArrayOptions
+     */
     public function getTagsArrayOptions($value, $formData)
     {
         return Tag::all()->lists('name');
     }
 
+    /**
+     * getTagsStringOptions
+     */
     public function getTagsStringOptions($value, $formData)
     {
-        return self::getTagsArrayOptions($value, $formData);
+        return $this->getTagsArrayOptions($value, $formData);
     }
 
+    /**
+     * getTagsArrayIdOptions
+     */
     public function getTagsArrayIdOptions($value, $formData)
     {
         return Tag::all()->pluck('name', 'id')->toArray();
     }
 
+    /**
+     * getTagsStringIdOptions
+     */
     public function getTagsStringIdOptions($value, $formData)
     {
-        return self::getTagsArrayIdOptions($value, $formData);
+        return $this->getTagsArrayIdOptions($value, $formData);
     }
 }

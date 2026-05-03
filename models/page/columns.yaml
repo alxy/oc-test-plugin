@@ -1,16 +1,33 @@
 columns:
-
     id:
-        label: id
+        label: ID
         type: number
+        order: 200
+
+    title:
+        label: Title
+        order: 800
 
     type:
         label: Type
         type: selectable
+        order: 700
         options:
-            1: Simple
-            2: Complex
+            1: [Simple, 'icon-clock-o']
+            2: [Complex, 'icon-exclamation']
+
+    parent:
+        label: Parent
+        relation: parent
+        select: title
+        order: 600
 
     content[title]:
-        label: content
+        label: Content
         type: text
+        order: 500
+
+    status:
+        label: Status
+        type: selectable
+        order: 900

@@ -1,0 +1,81 @@
+# ===================================
+# Filter Scope Definitions
+# ===================================
+
+scopes:
+    username:
+        label: Username
+        type: text
+        # default: Neo
+        # conditions:
+        #     equals: true
+
+    status:
+        label: Status
+        type: dropdown
+        options:
+            pending: Pending
+            active: Active
+            closed: Closed
+        conditions: '1 = 1'
+        # default:
+        #     - pending
+        #     - active
+
+    roles:
+        type: group
+        label: Role
+        modelScope: applyRoleFilter
+        modelClass: October\Test\Models\Role
+        optionsScope: applyRoleOptionsFilter
+        nameFrom: name
+        dependsOn: disable_roles
+        matchMode: toggle
+        # default:
+        #     - 1
+
+    disable_roles:
+        type: checkbox
+        label: Disable Roles
+        conditions: id = 1
+        # default: 1
+
+    disable_roles_switch:
+        type: switch
+        label: First & Second
+        conditions:
+            - id = 1
+            - id = 2
+        # default: 2
+
+    id:
+        type: number
+        label: ID
+        default: 1
+        # conditions: id = ':value'
+
+    created_at:
+        label: Created
+        type: date
+        showWeekNumber: true
+        default: '2020-01-02'
+        # default: now
+        # conditions:
+        #     equals: true
+        #     between: created_at >= ':after' AND created_at <= ':before'
+
+    discount:
+        label: Discount (Custom)
+        type: discount
+        allowSearch: true
+
+    testsearch:
+        label: Search (Custom)
+        type: inlinesearch
+
+    testtoggle:
+        label: Switch (Custom)
+        type: inlineballoon
+        options:
+            neo: Neo
+            morpheus: Morpheus

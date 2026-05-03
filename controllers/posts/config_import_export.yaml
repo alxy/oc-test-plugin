@@ -1,0 +1,11 @@
+# ===================================
+#  Import/Export Behavior Config
+# ===================================
+
+export:
+    useList: posts
+    fileName: posts.json
+
+defaultFormatOptions:
+    fileFormat: json
+    encoding: utf-8

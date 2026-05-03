@@ -7,8 +7,8 @@ use Model;
  */
 class Member extends Model
 {
-
     use \October\Rain\Database\Traits\SimpleTree;
+    use \October\Rain\Database\Traits\Multisite;
 
     /**
      * @var string The database table used by the model.
@@ -21,38 +21,58 @@ class Member extends Model
     protected $guarded = ['*'];
 
     /**
-     * @var array Fillable fields
+     * @var array fillable fields
      */
     protected $fillable = [];
 
     /**
-     * @var array Relations
+     * @var array propagatable list of attributes to propagate to other sites.
      */
-    public $hasOne = [];
-    public $hasMany = [];
-    public $belongsTo = [
-        'user' => 'October\Test\Models\User'
-    ];
-    public $belongsToMany = [];
-    public $morphTo = [];
-    public $morphOne = [];
-    public $morphMany = [];
-    public $attachOne = [];
-    public $attachMany = [];
+    protected $propagatable = [];
 
     /**
-     * Limit results to only records that are eligible to be parents of the provided model.
-     * Ineligible parents include: The provided model itself, models with the provided model 
-     * as it's own parent already, and a model that is already the current model's parent
-     *
-     * @param Query $query
-     * @param Model $model The model to check for eligible parents against
-     * @return Query
+     * @var bool|array propagatableSync will enforce model structures between all sites.
+     */
+    protected $propagatableSync = true;
+
+    /**
+     * @var array Relations
+     */
+    public $belongsTo = [
+        'user' => \October\Test\Models\User::class,
+        'grand_parent' => \October\Test\Models\Member::class
+    ];
+
+    /**
+     * filterFields
+     */
+    public function filterFields($fields, $context = null)
+    {
+        if ($fields->grand_parent && $this->parent?->parent) {
+            $fields->grand_parent->value = $this->parent->parent->id;
+        }
+
+        // Simple context scope
+        if (!isset($fields->parent_name)) {
+            return;
+        }
+
+        // Only apply value when refreshing
+        if ($context === 'refresh' && $this->parent) {
+            $fields->parent_name->value = $this->parent->name;
+        }
+    }
+
+    /**
+     * scopeEligibleParents limits results to only records that are eligible to be parents of the
+     * provided model. Ineligible parents include: The provided model itself, models with the
+     * provided model as it's own parent already, and a model that is already the current
+     * model's parent
      */
     public function scopeEligibleParents($query, $model)
     {
         $query
-            ->where('id', '!=', $model->id)
+            ->where('id', '<>', $model->id)
             ->where(function($query) use ($model) {
                 $query
                     ->where('parent_id', '!=', $model->id)
@@ -62,7 +82,7 @@ class Member extends Model
         ;
 
         if ($model->parent_id) {
-            $query->where('id', '!=', $model->parent_id);
+            $query->where('id', '<>', $model->parent_id);
         }
 
         return $query;

@@ -16,7 +16,7 @@ fields:
         label: Record Finder
         comment: Record finder field.
         type: recordfinder
-        list: ~/plugins/october/test/models/person/columns.yaml
+        list: $/october/test/models/person/columns.yaml
         prompt: Click the %s to find an alternative person
         nameFrom: name
         descriptionFrom: number
@@ -27,6 +27,7 @@ fields:
         label: Relation Controller
         commentAbove: RelationController used as a partial field type.
         type: partial
+        path: person
 
     # Proxy Fields
     person[name]:

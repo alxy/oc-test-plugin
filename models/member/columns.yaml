@@ -3,6 +3,9 @@
 # ===================================
 
 columns:
+    # id:
+    #     label: ID
+
     name:
         label: Member
         searchable: true
@@ -12,3 +15,4 @@ columns:
         relation: user
         select: username
         default: none
+        tooltip: Related User

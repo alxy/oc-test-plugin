@@ -1,0 +1,24 @@
+# ===================================
+#  Relation Behavior Config
+# ===================================
+
+country:
+    label: Country
+    form: $/october/test/models/country/fields_simple_nested.yaml
+    list: $/october/test/models/country/columns_simple.yaml
+
+country[cities]:
+    label: City
+    form: $/october/test/models/city/fields.yaml
+    list: $/october/test/models/city/columns.yaml
+
+locations:
+    label: Location
+    list: $/october/test/models/location/columns.yaml
+    form: $/october/test/models/location/fields.yaml
+    manage:
+        recordsPerPage: 10
+        showSearch: true
+    structure:
+        showTree: true
+        showReorder: true

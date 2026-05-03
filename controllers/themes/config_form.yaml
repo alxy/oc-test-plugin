@@ -14,6 +14,11 @@ modelClass: October\Test\Models\Theme
 # Default redirect location
 defaultRedirect: october/test/themes
 
+# Form Design
+design:
+    displayMode: sidebar
+    sidebarSize: 500
+
 # Create page
 create:
     title: Create Theme

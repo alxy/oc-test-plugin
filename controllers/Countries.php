@@ -9,12 +9,14 @@ use Backend\Classes\Controller;
 class Countries extends Controller
 {
     public $implement = [
-        'Backend.Behaviors.FormController',
-        'Backend.Behaviors.ListController'
+        \Backend\Behaviors\FormController::class,
+        \Backend\Behaviors\ListController::class,
+        \Backend\Behaviors\RelationController::class
     ];
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
+    public $relationConfig = 'config_relation.yaml';
 
     public $requiredPermissions = ['october.test.access_plugin'];
 
@@ -22,6 +24,6 @@ class Countries extends Controller
     {
         parent::__construct();
 
-        BackendMenu::setContext('October.Test', 'test', 'countries');
+        BackendMenu::setContext('October.Test', 'test', 'locations');
     }
 }

@@ -12,10 +12,15 @@ fields:
         label: Status
         type: balloon-selector
         span: auto
+        default: draft
         options:
             active: Active
             draft: Draft
             hidden: Hidden
+
+    subtitle:
+        label: Subtitle
+        span: full
 
     party_mode:
         label: Party mode
@@ -29,16 +34,97 @@ fields:
 
 tabs:
     fields:
-
         posts:
             label: Posts
-            type: partial
+            type: relation
             tab: Posts
+            # readOnly: true
 
         images:
             label: Images
             type: fileupload
             mode: image
+            span: auto
             fileTypes: ['png', 'jpg', 'jpeg']
             mimeTypes: 'png,jpg,jpeg'
             tab: Images
+
+        _avatar:
+            label: Avatar
+            type: mediafinder
+            mode: image
+            span: auto
+            tab: Images
+
+        gallery:
+            label: Gallery
+            type: repeater
+            tab: Images
+            span: full
+            default:
+                - title: First Title
+                - title: Second Title
+            form:
+                fields:
+                    title:
+                        label: Gallery Title
+                    images:
+                        label: Gallery Images
+                        type: mediafinder
+                        maxItems: 0
+                        mode: image
+
+        start_date:
+            label: Start Date
+            tab: Event
+            type: datepicker
+            mode: date
+            firstDay: 1
+            showWeekNumber: true
+            format: d.m.Y
+            span: left
+            disableDays:
+                - 0 # Sunday
+                - 6 # Saturday
+                - "2023-08-10" # Date
+
+        end_date:
+            label: End Date
+            tab: Event
+            type: datepicker
+            mode: date
+            firstDay: 1
+            showWeekNumber: true
+            format: d.m.Y
+            dependsOn: is_all_day
+            span: right
+            disableDays: October\Test\Models\Gallery::getAllDisabledDatesForEndDate
+
+        is_all_day:
+            label: All Day?
+            tab: Event
+            type: switch
+            # default: true
+            span: left
+
+        start_time:
+            label: Start Time
+            tab: Event
+            type: datepicker
+            mode: time
+            dependsOn: is_all_day
+            span: left
+
+        end_time:
+            label: End Time
+            tab: Event
+            type: datepicker
+            mode: time
+            dependsOn: is_all_day
+            span: right
+
+        countries:
+            label: Countries
+            type: partial
+            tab: Event
+            # path: countries

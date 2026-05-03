@@ -1,0 +1,42 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    title:
+        label: Label
+
+    price:
+        label: Price
+
+    category_name:
+        label: Categories
+        relation: categories
+        select: name
+
+    gallery:
+        label: Gallery
+        type: image
+
+    location_built:
+        label: Built At
+        relation: location_built
+        select: name
+
+    location_sold:
+        label: Sold At
+        relation: location_sold
+        select: name
+
+    _dropdown:
+        label: Dropdown
+        type: partial
+        path: $/october/test/models/product/_column_dropdown.php
+        clickable: false
+        sortable: false
+
+    company_name:
+        label: Company Name
+        relation: company
+        select: name
+        searchable: true
